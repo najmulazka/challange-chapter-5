@@ -1,0 +1,71 @@
+GET http://localhost:3000/api/v1/
+
+### REGISTER
+POST http://localhost:3000/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "name":"najmul",
+    "email":"najmul@gmail.com",
+    "password":"najmul",
+    "password_confirmation": "najmul",
+    "identity_type":"KTP",
+    "identity_number":"323031262982347333",
+    "address":"Purbalingga"
+}
+
+### LOGIN
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email":"najmul@gmail.com",
+    "password":"najmul"
+}
+
+### TEST AUTHENTICATE
+GET  http://localhost:3000/api/v1/auth/authenticate
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTcyLCJpYXQiOjE2OTc3OTU5MzV9.FMMGKBCv2cKq3Jj4QewZ-YO6dtNztlH1q1z97ovOfc0
+
+### SHOW ALL USER
+GET  http://localhost:3000/api/v1/users
+
+### SHOW DETAIL USER WITH ID
+GET  http://localhost:3000/api/v1/users/566
+
+### CREATE BANK ACCOUNT
+POST http://localhost:3000/api/v1/accounts
+Content-Type: application/json
+
+{
+    "user_id" :547,
+    "bank_name" : "BCA",
+    "bank_account_number":"050723874923831",
+    "balance":200000
+}
+
+### SHOW ALL ACCOUNTS
+GET http://localhost:3000/api/v1/accounts
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDM5LCJpYXQiOjE2OTc3ODU1MTF9.s5lnOJzjioPKC55GUN7mTebkJ_9dmVVfeNAwC9NArTY
+
+### SHOW DETAIL ACCOUNT
+GET http://localhost:3000/api/v1/accounts/3
+
+### CREATE TRANSACTION
+POST http://localhost:3000/api/v1/transactions
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTU2LCJpYXQiOjE2OTc3OTI0MDZ9.g6zeLxM3JZc7Hu_oEl73XxxEYRhcSJ4wu661NFv_sSQ
+Content-Type: application/json
+
+{
+    "source_account_id":154,
+    "destination_account_id":155,
+    "amount":30000
+}
+
+### SHOW ALL TRANSACTION
+GET http://localhost:3000/api/v1/transactions
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTU2LCJpYXQiOjE2OTc3OTI0MDZ9.g6zeLxM3JZc7Hu_oEl73XxxEYRhcSJ4wu661NFv_sSQ
+
+### SHOW DETAIL TRANSACTION
+GET http://localhost:3000/api/v1/transactions/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTU2LCJpYXQiOjE2OTc3OTI0MDZ9.g6zeLxM3JZc7Hu_oEl73XxxEYRhcSJ4wu661NFv_sSQ

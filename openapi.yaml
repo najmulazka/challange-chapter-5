@@ -1,0 +1,630 @@
+openapi: 3.0.3
+info:
+  title: Banking System
+  description: |-
+    Aplikasi ini akan berguna untuk menyimpan data nasabah dan menyimpan data transaksi yang dilakukan oleh nasabah
+  contact:
+    email: najmulazka225@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Auth
+  - name: Users
+  - name: Accounts
+  - name: Transactions
+paths:
+  /auth/register:
+    post:
+      tags:
+        - 'Auth'
+      operationId: post-register
+      # summary: -
+      # description: -
+      requestBody:
+        $ref: '#/components/requestBodies/Register'
+      responses:
+        '201':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          users:
+                            $ref: '#/components/schemas/UserModel'
+                          profiles:
+                            $ref: '#/components/schemas/ProfileModel'
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+
+  /auth/login:
+    post:
+      tags:
+        - 'Auth'
+      operationId: post-login
+      # summary: -
+      # description: -
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: 'najmul123@gmail.com'
+                password:
+                  type: string
+                  example: 'IniPassword123'
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          users:
+                            $ref: '#/components/schemas/UserModel'
+                          token:
+                            type: string
+                            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDM5LCJpYXQiOjE2OTc3ODU2NjV9._dCGSjWfTamNlmWM53es0o-1_ePU8_Lhzjne_RG74Ww'
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+
+  /users:
+    get:
+      tags:
+        - Users
+      operationId: get-fetch-all-user
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/UserModel'
+  /users/{userId}:
+    get:
+      tags:
+        - Users
+      operationId: get-fetch-user-detail
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: 'userId wajib diisi'
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/UserModel'
+                          - type: object
+                            properties:
+                              profiles:
+                                type: object
+                                properties:
+                                  identity_type:
+                                    type: string
+                                    example: 'KTP'
+                                  identity_number:
+                                    type: string
+                                    example: '3303289712323291'
+                                  address:
+                                    type: string
+                                    example: 'Purbalingga'
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+  /accounts:
+    post:
+      tags:
+        - Accounts
+      operationId: post-create-new-account
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAccount'
+      responses:
+        '201':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/AccountModel'
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+    get:
+      tags:
+        - Accounts
+      operationId: get-fetch-all-account
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AccountModel'
+  /accounts/{accountId}:
+    get:
+      tags:
+        - Accounts
+      operationId: get-fetch-account-detail
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: accountId
+          schema:
+            type: integer
+          required: true
+          description: 'accountId wajib diisi'
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          users:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: 'Najmul Azka'
+                          bank_name:
+                            type: string
+                            example: 'BCA'
+                          bank_account_number:
+                            type: string
+                            example: '03723874923831'
+                          balance:
+                            type: number
+                            example: 200000
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+  /transactions:
+    post:
+      tags:
+        - Transactions
+      operationId: post-create-new-transactions
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CreateTransaction'
+      responses:
+        '201':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/TransactionModel'
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+        '401':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+    get:
+      tags:
+        - Transactions
+      operationId: get-fetch-all-transaction
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TransactionModel'
+        '401':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+  /transactions/{transactionId}:
+    get:
+      tags:
+        - Transactions
+      operationId: get-fetch-transaction-detail
+      # summary: -
+      # description: -
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: transactionId
+          schema:
+            type: integer
+          required: true
+          description: 'transactionId wajib diisi'
+      responses:
+        '200':
+          description: Succesfull Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseTrue'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          source_account_id:
+                            type: integer
+                            example: 1
+                          source_name:
+                            type: string
+                            example: 'Najmul Azka'
+                          source_bank_name:
+                            type: string
+                            example: 'BCA'
+                          source_bank_account_number:
+                            type: string
+                            example: '0723874923831'
+                          destination_account_id:
+                            type: integer
+                            example: 2
+                          destination_name:
+                            type: string
+                            example: 'Dea Lili'
+                          destination_bank_name:
+                            type: string
+                            example: 'BCA'
+                          destination_bank_account_number:
+                            type: string
+                            example: '03723874923831'
+                          amount:
+                            type: number
+                            example: 30000
+
+        '400':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+        '401':
+          description: Failed Operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BasicResponseFalse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        example: null
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BasicResponseTrue:
+      title: BasicResponseTrue
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Success!'
+        err:
+          type: string
+          example: null
+    BasicResponseFalse:
+      title: BasicResponseFalse
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'Bad Request'
+        err:
+          type: string
+          example: 'Pesan Error'
+    UserModel:
+      title: UserModel
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Najmul Azka'
+        email:
+          type: string
+          example: 'najmul123@gmail.com'
+        password:
+          type: string
+          example: '$2b$10$oJMWk11vcMX9HoUYxNoW5uUmwg'
+    ProfileModel:
+      title: ProfileModel
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        identity_type:
+          type: string
+          example: 'KTP'
+        identity_number:
+          type: string
+          example: '3303289712323291'
+        address:
+          type: string
+          example: 'Purbalingga'
+    AccountModel:
+      title: AccountModel
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        bank_name:
+          type: string
+          example: 'BCA'
+        bank_account_number:
+          type: string
+          example: '03723874923831'
+        balance:
+          type: number
+          example: 200000
+    TransactionModel:
+      title: TransactionModel
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        source_account_id:
+          type: integer
+          example: 1
+        destination_account_id:
+          type: integer
+          example: 2
+        amount:
+          type: number
+          example: 30000
+  requestBodies:
+    Register:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: 'Najmul azka'
+              email:
+                type: string
+                example: 'najmul123@gmail.com'
+              password:
+                type: string
+                example: IniPassword123
+              password_confirmation:
+                type: string
+                example: IniPassword123
+              identity_type:
+                type: string
+                example: 'KTP'
+              identity_number:
+                type: string
+                example: '3303289712323291'
+              address:
+                type: string
+                example: 'Purbalingga'
+    CreateAccount:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: integer
+                example: 1
+              bank_name:
+                type: string
+                example: 'BCA'
+              bank_account_number:
+                type: string
+                example: '03723874923831'
+              balance:
+                type: number
+                example: 200000
+    CreateTransaction:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              source_account_id:
+                type: integer
+                example: 1
+              destination_account_id:
+                type: integer
+                example: 2
+              amount:
+                type: number
+                example: 30000
